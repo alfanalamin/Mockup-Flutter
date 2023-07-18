@@ -1,0 +1,749 @@
+type Basic {
+  isActive: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+# A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+scalar DateTime
+
+type Role {
+  id: ID!
+  name: String!
+}
+
+type UserOtp {
+  id: String!
+  code: String
+  type: String
+  used_at: DateTime
+}
+
+# Provinsi
+type Province {
+  id: ID!
+  name: String
+}
+
+# Kabupaten
+type Regency {
+  id: ID!
+  name: String
+  province: Province
+}
+
+# Kecamatan
+type District {
+  id: ID!
+  name: String
+  regency: Regency
+}
+
+# Kelurahan
+type SubDistrict {
+  id: ID!
+  name: String
+  district: District
+}
+
+type Image {
+  original: String
+  md: String
+  sm: String
+  xs: String
+}
+
+type UserDetail {
+  birth: DateTime
+  birthYmd: String
+  gender: String
+  address: String
+  idCardNumber: String
+  idCardSelfiePicture: String
+  idCardSelfiePictureSrc: Image
+  locationLat: Float
+  locationLng: Float
+  province: Province
+  regency: Regency
+  district: District
+  subDistrict: SubDistrict
+  cityOfBirth: Regency!
+  verifier: User
+  verifiedAt: DateTime
+  rejectedAt: DateTime
+  rejectionReason: String
+  isWaitingForVerification: Boolean!
+  bio: String
+}
+
+type BlogCategory {
+  id: ID!
+  name: String
+  iconSrc: Image
+  slug: String
+  description: String
+  posts: [BlogPost!]!
+}
+
+type BlogPost {
+  id: ID!
+  author: User!
+  slug: String
+  title: String
+  summary: String
+  body: String
+  youtubeVideoKey: String
+  thumbnail: String
+  thumbnailSrc: Image
+  frontendUrl: String
+  youtubeVideoThumbnail: String
+  categories: [BlogCategory!]!
+  publishedAt: DateTime
+  basic: Basic
+}
+
+type Notification {
+  id: ID!
+  event: NOTIFICATION_EVENT!
+  user: User!
+  message: String
+  dataId: String
+  data: String
+  seenAt: DateTime
+  clickedAt: DateTime
+  basic: Basic
+}
+
+enum NOTIFICATION_EVENT {
+  USER_VERIFIED
+  USER_VERIFICATION_FAILED
+  CONSULTATION_CREATED
+  CONSULTATION_ANSWERED
+  CONSULTATION_MENTOR_ASSIGNED
+  DONATION_PAID
+  EVENT_INVOICE_PAID
+  EVENT_ETICKET_ISSUED
+  EVENT_CREATED
+  BLOG_POST_CREATED
+  NEW_FRIEND_REQUEST
+  FRIEND_REQUEST_ACCEPTED
+  FRIEND_REQUEST_REJECTED
+}
+
+type UserDeletionRequest {
+  id: ID!
+  user: User!
+  canceledAt: DateTime
+  basic: Basic
+}
+
+type User {
+  id: ID!
+  name: String
+  username: String
+  email: String
+  phone: String
+  avatarSrc: Image
+  basic: Basic
+  roles: [Role!]!
+  detail: UserDetail
+  blogPosts: [BlogPost!]!
+  verifier: [UserDetail!]
+  notifications: [Notification!]!
+  havePendingFriendRequestFromCurrentUser: Boolean
+  userDeletionRequests: UserDeletionRequest
+}
+
+type Message {
+  message: String!
+}
+
+type PaginationSchema {
+  currentPage: Int!
+  limit: Int!
+  totalPages: Int!
+  totalRows: Int!
+}
+
+type BlogPostResSchema {
+  items: [BlogPost!]!
+  pagination: PaginationSchema!
+}
+
+type BlogCategoryResSchema {
+  items: [BlogCategory!]!
+  pagination: PaginationSchema!
+}
+
+type NotificationsResSchema {
+  items: [Notification!]!
+  pagination: PaginationSchema!
+}
+
+type UsersResSchema {
+  items: [User!]!
+  pagination: PaginationSchema!
+}
+
+type AccessToken {
+  accessToken: String!
+}
+
+type AppVersions {
+  id: ID!
+  name: String
+  android: String
+  ios: String
+  basic: Basic!
+}
+
+type EmailNotifications {
+  email: [String!]!
+}
+
+# Admin-managed pages, e.g., Privacy Policy, User Guidebook, Terms and Condition, etc.
+type Page {
+  id: String!
+  slug: String
+  title: String
+  body: String
+  thumbnail: String
+  thumbnailSrc: Image
+  basic: Basic
+}
+
+# All pages with pagination.
+type PagesResSchema {
+  items: [Page!]!
+  pagination: PaginationSchema!
+}
+
+type Slider {
+  id: ID!
+  name: String
+  description: String
+  href: String
+  image: Image
+  basic: Basic!
+}
+
+type ContentSliderResSchema {
+  items: [Slider!]!
+  pagination: PaginationSchema!
+}
+
+type Testimony {
+  id: ID!
+  name: String!
+  bio: String!
+  message: String!
+  imageSrc: Image
+  basic: Basic
+}
+
+type TestimoniesSchema {
+  items: [Testimony!]!
+  pagination: PaginationSchema!
+}
+
+type StoreCategory {
+  id: ID!
+  name: String
+  slug: String
+  description: String
+  icon: String
+  parent: StoreCategory!
+  children: [StoreCategory!]!
+  products: [StoreProduct!]!
+}
+
+type StoreProductLinks {
+  tokopedia: String
+  shopee: String
+  blibli: String
+  bukalapak: String
+  whatsapp: String
+}
+
+type StoreProduct {
+  id: ID!
+  name: String
+  slug: String
+  category: StoreCategory!
+  body: String
+  price: Float
+  thumbnailSrc: Image
+  links: StoreProductLinks
+  basic: Basic
+  images: [StoreProductImage!]!
+}
+
+type StoreProductImage {
+  id: ID!
+  pathSrc: Image
+}
+
+type StoreProductResSchema {
+  items: [StoreProduct!]!
+  pagination: PaginationSchema!
+}
+
+type StoreCategoriesResSchema {
+  items: [StoreCategory!]!
+  pagination: PaginationSchema!
+}
+
+type GalleryItem {
+  id: ID!
+  title: String!
+  description: String!
+  thumbnailSrc: Image
+  youtubeVideoUrl: String!
+  basic: Basic
+  album: GalleryAlbum
+}
+
+type GalleryAlbum {
+  id: ID!
+  title: String!
+  slug: String!
+  description: String!
+  thumbnailSrc: Image
+  basic: Basic
+  items: [GalleryItem!]!
+}
+
+type GalleryAlbumSchema {
+  items: [GalleryAlbum!]!
+  pagination: PaginationSchema!
+}
+
+type GalleryItemSchema {
+  items: [GalleryItem!]!
+  pagination: PaginationSchema!
+}
+
+type DistrictsResSchema {
+  items: [District!]!
+  pagination: PaginationSchema!
+}
+
+type ProvincesResSchema {
+  items: [Province!]!
+  pagination: PaginationSchema!
+}
+
+type RegenciesResSchema {
+  items: [Regency!]!
+  pagination: PaginationSchema!
+}
+
+type SubDistrictsResSchema {
+  items: [SubDistrict!]!
+  pagination: PaginationSchema!
+}
+
+type CommonOverviewEntity {
+  total: Float!
+}
+
+type DonationOverviewEntity {
+  total: Float!
+  totalAmount: Float!
+}
+
+type UsersDailyEntity {
+  total: Float!
+  date: DateTime!
+}
+
+type OverviewSchema {
+  users(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    roleId: Int
+    roleName: String
+    isWaitingForVerification: Boolean
+    isPremium: Boolean
+    provinceId: String
+    regencyId: String
+    districtId: String
+    subDistrictId: String
+    businessInterestIds: [String!]
+  ): CommonOverviewEntity!
+  donations: DonationOverviewEntity!
+  usersDaily(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    roleId: Int
+    roleName: String
+    isWaitingForVerification: Boolean
+    isPremium: Boolean
+    provinceId: String
+    regencyId: String
+    districtId: String
+    subDistrictId: String
+    businessInterestIds: [String!]
+  ): [UsersDailyEntity!]!
+  sellBusinesses: CommonOverviewEntity!
+  businessesSupply: CommonOverviewEntity!
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+type EventCategory {
+  id: ID!
+  slug: String
+  name: String
+  description: String
+  icon: String
+  basic: Basic
+}
+
+type EventCategoriesResSchema {
+  items: [EventCategory!]!
+  pagination: PaginationSchema!
+}
+
+type Inboxes {
+  id: ID!
+  name: String
+  email: String
+  phone: String
+  subject: String
+  message: String
+  website: String
+  readAt: DateTime
+  basic: Basic
+}
+
+type InboxesResSchema {
+  items: [Inboxes!]!
+  pagination: PaginationSchema!
+}
+
+input ProvinceInput {
+  id: ID!
+  name: String
+}
+
+input RegencyInput {
+  id: ID!
+  name: String
+  province: ProvinceInput
+}
+
+input DistrictInput {
+  id: ID!
+  name: String
+  regency: RegencyInput
+}
+
+input SubDistrictInput {
+  id: ID!
+  name: String
+  district: DistrictInput
+}
+
+type Query {
+  # List all users. Sortable by: `basic.createdAt`, `name` (default), `username`.
+  users(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    roleId: Int
+    roleName: String
+    isWaitingForVerification: Boolean
+    isPremium: Boolean
+    provinceId: String
+    regencyId: String
+    districtId: String
+    subDistrictId: String
+    businessInterestIds: [String!]
+  ): UsersResSchema!
+  user(id: String!): User!
+  me: User!
+  blogPosts(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    author: String
+    authorId: String
+    categoryId: String
+    type: BlogPostType
+  ): BlogPostResSchema!
+  blogPost(id: String, slug: String): BlogPost!
+  blogCategories(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): BlogCategoryResSchema!
+  blogCategory(id: String, slug: String): BlogCategory!
+  notifications(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): NotificationsResSchema
+  roles: [Role!]!
+  appsVersions: AppVersions!
+  emailNotifications: EmailNotifications!
+  contentSliders(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): ContentSliderResSchema!
+  contentSlider(id: String!): Slider!
+
+  # Get all pages.
+  contentPages(
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): PagesResSchema!
+
+  # Find page by ID or by slug, even though both arguments are optional, you need to make sure to pass one of them. If both parameters are present, only the ID will be used to find the page.
+  contentPage(id: String, slug: String): Page!
+  testimonies(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): TestimoniesSchema!
+  testimony(id: String!): Testimony
+  storeCategories(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): StoreCategoriesResSchema!
+  storeCategory(id: String!): StoreCategory!
+  storeCategoriesTree: [StoreCategory!]!
+  storeProducts(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): StoreProductResSchema!
+  storeProduct(id: String!): StoreProduct!
+  inboxMessages(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): InboxesResSchema!
+  inboxMessage(id: String!): Inboxes!
+  galleryAlbums(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): GalleryAlbumSchema!
+  galleryAlbum(id: String, slug: String): GalleryAlbum
+  galleryItems(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    albumId: String
+  ): GalleryItemSchema!
+  galleryItem(id: String!): GalleryItem
+
+  # Get all provinces.
+  provinces(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): ProvincesResSchema!
+
+  # Get a province by ID.
+  province(id: String!): Province!
+
+  # Get all regencies.
+  regencies(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    provinceId: String
+  ): RegenciesResSchema!
+
+  # Get a regency by ID.
+  regency(id: String!): Regency!
+
+  # Get all districts.
+  districts(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    regencyId: String
+  ): DistrictsResSchema!
+
+  # Get a district by ID.
+  district(id: String!): District!
+
+  # Get all sub-districts.
+  subDistricts(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    districtId: String
+  ): SubDistrictsResSchema!
+
+  # Get a sub-district by ID.
+  subDistrict(id: String!): SubDistrict!
+  overview(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+    startDate: DateTime
+    endDate: DateTime
+  ): OverviewSchema!
+  eventCategories(
+    keyword: String
+    page: Int = 1
+    limit: Int = 10
+    sortBy: String
+    order: SortOrder = ASC
+  ): EventCategoriesResSchema!
+  eventCategory(id: String, slug: String): EventCategory!
+}
+
+enum BlogPostType {
+  video
+  article
+  all
+}
+
+type Mutation {
+  updateMyDetail(payload: UserMeUpdateDto!): User!
+  updateMyPassword(
+    oldPassword: String!
+    newPassword: String!
+    newPasswordConfirmation: String!
+  ): User!
+  deleteUser(id: String!): Message!
+  requestForProfileVerification: Message!
+  verifyUser(id: String!): Message!
+  rejectUserVerification(id: String!, rejectionReason: String!): Message!
+  setFcmToken(token: String!): Message!
+  requestAccountDeletion: Message!
+  toggleActiveBlogPost(id: String!): BlogPost!
+  deleteBlogPost(id: String!): Message!
+  deleteBlogCategory(id: String!): Message!
+  sendNotification(payload: PushNotificationDto!): Message!
+  login(payload: LoginDto!): AccessToken!
+  register(email: String!, name: String!, password: String!): AccessToken!
+  logout: Message!
+  registerWithPhone(registerWithPhoneDto: RegisterWithOtpDto!): UserOtp!
+  requestOtp(phone: String!): UserOtp!
+  exchangeOtp(exchangeOtpDto: ExchangeOtpDto!): AccessToken!
+  setAppVersions(android: String!, ios: String!): AppVersions!
+  setEmailNotifications(email: [String!]!): EmailNotifications!
+  toggleActiveContentSlider(id: String!): Slider!
+  deleteContentSlider(id: String!): Message!
+
+  # Delete a page.
+  deleteContentPage(id: String!): Message!
+
+  # Make a page active or inactive.
+  toggleContentPage(id: String!): Page!
+  deleteTestimony(id: String!): Message!
+  toggleActiveTestimony(id: String!): Testimony!
+  deleteStoreCategory(id: String!): Message!
+  toggleActiveStoreProduct(id: String!): StoreProduct!
+  deleteStoreProduct(id: String!): Message!
+  createInboxMessage(
+    name: String!
+    email: String!
+    phone: String!
+    subject: String
+    message: String
+    website: String!
+  ): Inboxes!
+  deleteInbox(id: String!): Message!
+  deleteGalleryAlbum(id: String!): Message!
+  toggleActiveGalleryAlbum(id: String!): GalleryAlbum!
+  deleteGalleryItem(id: String!): Message!
+  toggleActiveGalleryItem(id: String!): GalleryItem!
+}
+
+input UserMeUpdateDto {
+  name: String
+  email: String
+  detail: UserDetailDto
+}
+
+input UserDetailDto {
+  gender: String
+  address: String
+  birth: DateTime
+  idCardNumber: String
+  idCardSelfiePicture: String
+  locationLat: Float
+  locationLng: Float
+  province: ProvinceInput
+  regency: RegencyInput
+  district: DistrictInput
+  subDistrict: SubDistrictInput
+  cityOfBirth: RegencyInput
+  verifiedAt: DateTime
+  rejectedAt: DateTime
+  rejectionReason: String
+  bio: String
+}
+
+input PushNotificationDto {
+  title: String
+  body: String
+  userIds: [String!]!
+}
+
+input LoginDto {
+  username: String!
+  password: String!
+}
+
+input RegisterWithOtpDto {
+  name: String!
+  phone: String!
+}
+
+input ExchangeOtpDto {
+  code: String!
+  phone: String!
+}

@@ -1,0 +1,8 @@
+query blogPosts {
+  blogPosts(limit: 500) {
+    items {
+      id
+      title
+    }
+  }
+}
