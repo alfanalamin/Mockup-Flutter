@@ -14,11 +14,8 @@ Future<void> main() async {
   Intl.defaultLocale = 'id';
   HttpOverrides.global = MyHttpOverrides();
   await di.locator.allReady();
-  SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp, 
-      DeviceOrientation.portraitDown
-    ]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(const MyApp());
 }
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/presentation/page/post_screen.dart';
 import 'package:flutter_application_1/presentation/provider/blog_post_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/injection.dart' as di;
@@ -23,9 +24,12 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          fontFamily: 'Inter',
+          scaffoldBackgroundColor: Colors.white,
         ),
-        // home: const BlogPostScreen(),
+        home: const BlogPostScreen(
+        ),
       )
-    );
+    ); 
   }
 }

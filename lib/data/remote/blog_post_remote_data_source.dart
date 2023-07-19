@@ -2,7 +2,7 @@ import 'package:flutter_application_1/common/graphql/graphql_util.dart';
 import 'package:flutter_application_1/common/graphql/query/blogPosts.graphql.dart';
 import 'package:graphql/client.dart';
 import 'package:get_it/get_it.dart';
-
+import 'dart:async';
 abstract class BlogPostRemoteDataSource {
   Future<Query$blogPosts$blogPosts?> getPost();
 }
@@ -12,15 +12,11 @@ class BlogPostRemoteDataSourceImpl implements BlogPostRemoteDataSource {
 
   @override
   Future<Query$blogPosts$blogPosts?> getPost() async {
-    final QueryOptions options = QueryOptions(
-      document: documentNodeQueryblogPosts,
-      fetchPolicy: FetchPolicy.networkOnly,
-    );
-    final QueryResult result =
-        await GetIt.instance<GraphQLClient>().query(options);
+    final result = await GetIt.I<GraphQLClient>().query$blogPosts(
+        Options$Query$blogPosts(fetchPolicy: FetchPolicy.networkOnly));
     checkError(result);
-    return result.data != null
-        ? Query$blogPosts$blogPosts.fromJson(result.data!)
-        : null;
+    return result.parsedData?.blogPosts;
   }
 }
+
+

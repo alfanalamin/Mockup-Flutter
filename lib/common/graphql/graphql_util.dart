@@ -1,7 +1,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_application_1/common/failure.dart';
-import 'package:graphql/client.dart';
+import 'package:graphql/ client.dart';
 
 void checkError(QueryResult<Object?> result) {
   if (result.hasException) {

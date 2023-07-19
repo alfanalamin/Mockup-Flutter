@@ -1,4 +1,8 @@
+import 'package:flutter/widgets.dart' as widgets;
 import 'package:gql/ast.dart';
+import 'package:graphql/client.dart' as graphql;
+import 'package:graphql_flutter/graphql_flutter.dart' as graphql_flutter;
+
 
 class Query$blogPosts {
   Query$blogPosts({
@@ -199,6 +203,120 @@ const documentNodeQueryblogPosts = DocumentNode(definitions: [
   ),
 ]);
 
+Query$blogPosts _parserFn$Query$blogPosts(
+        Map<String, dynamic> data) =>
+    Query$blogPosts.fromJson(data);
+
+class Options$Query$blogPosts
+    extends graphql.QueryOptions<Query$blogPosts> {
+  Options$Query$blogPosts({
+    String? operationName,
+    graphql.FetchPolicy? fetchPolicy,
+    graphql.ErrorPolicy? errorPolicy,
+    graphql.CacheRereadPolicy? cacheRereadPolicy,
+    Object? optimisticResult,
+    Duration? pollInterval,
+    graphql.Context? context,
+  }) : super(
+          operationName: operationName,
+          fetchPolicy: fetchPolicy,
+          errorPolicy: errorPolicy,
+          cacheRereadPolicy: cacheRereadPolicy,
+          optimisticResult: optimisticResult,
+          pollInterval: pollInterval,
+          context: context,
+          document: documentNodeQueryblogPosts,
+          parserFn: _parserFn$Query$blogPosts,
+        );
+}
+
+class WatchOptions$Query$blogPosts
+    extends graphql.WatchQueryOptions<Query$blogPosts> {
+  WatchOptions$Query$blogPosts({
+    String? operationName,
+    graphql.FetchPolicy? fetchPolicy,
+    graphql.ErrorPolicy? errorPolicy,
+    graphql.CacheRereadPolicy? cacheRereadPolicy,
+    Object? optimisticResult,
+    graphql.Context? context,
+    Duration? pollInterval,
+    bool? eagerlyFetchResults,
+    bool carryForwardDataOnException = true,
+    bool fetchResults = false,
+  }) : super(
+          operationName: operationName,
+          fetchPolicy: fetchPolicy,
+          errorPolicy: errorPolicy,
+          cacheRereadPolicy: cacheRereadPolicy,
+          optimisticResult: optimisticResult,
+          context: context,
+          document: documentNodeQueryblogPosts,
+          pollInterval: pollInterval,
+          eagerlyFetchResults: eagerlyFetchResults,
+          carryForwardDataOnException: carryForwardDataOnException,
+          fetchResults: fetchResults,
+          parserFn: _parserFn$Query$blogPosts,
+        );
+}
+
+class FetchMoreOptions$Query$blogPosts extends graphql.FetchMoreOptions {
+  FetchMoreOptions$Query$blogPosts(
+      {required graphql.UpdateQuery updateQuery})
+      : super(
+          updateQuery: updateQuery,
+          document: documentNodeQueryblogPosts,
+        );
+}
+
+extension ClientExtension$Query$blogPosts on graphql.GraphQLClient {
+  Future<graphql.QueryResult<Query$blogPosts>> query$blogPosts(
+          [Options$Query$blogPosts? options]) async =>
+      await this.query(options ?? Options$Query$blogPosts());
+  graphql.ObservableQuery<Query$blogPosts> watchQuery$blogPosts(
+          [WatchOptions$Query$blogPosts? options]) =>
+      this.watchQuery(options ?? WatchOptions$Query$blogPosts());
+  void writeQuery$blogPosts({
+    required Query$blogPosts data,
+    bool broadcast = true,
+  }) =>
+      this.writeQuery(
+        graphql.Request(
+            operation:
+                graphql.Operation(document: documentNodeQueryblogPosts)),
+        data: data.toJson(),
+        broadcast: broadcast,
+      );
+  Query$blogPosts? readQuery$blogPosts({bool optimistic = true}) {
+    final result = this.readQuery(
+      graphql.Request(
+          operation:
+              graphql.Operation(document: documentNodeQueryblogPosts)),
+      optimistic: optimistic,
+    );
+    return result == null ? null : Query$blogPosts.fromJson(result);
+  }
+}
+
+graphql_flutter.QueryHookResult<Query$blogPosts> useQuery$blogPosts(
+        [Options$Query$blogPosts? options]) =>
+    graphql_flutter.useQuery(options ?? Options$Query$blogPosts());
+graphql.ObservableQuery<Query$blogPosts> useWatchQuery$blogPosts(
+        [WatchOptions$Query$blogPosts? options]) =>
+    graphql_flutter
+        .useWatchQuery(options ?? WatchOptions$Query$blogPosts());
+
+class Query$blogPosts$Widget
+    extends graphql_flutter.Query<Query$blogPosts> {
+  Query$blogPosts$Widget({
+    widgets.Key? key,
+    Options$Query$blogPosts? options,
+    required graphql_flutter.QueryBuilder<Query$blogPosts> builder,
+  }) : super(
+          key: key,
+          options: options ?? Options$Query$blogPosts(),
+          builder: builder,
+        );
+}
 class Query$blogPosts$blogPosts {
   Query$blogPosts$blogPosts({
     required this.items,

@@ -29,12 +29,18 @@ void init(String flavor) {
         getPost: locator()));
 
   // Usecase
-  locator.registerLazySingleton( () => GetBlogPost(locator()));
+  // locator.registerLazySingleton( () => GetBlogPost(locator()));
+  locator
+      .registerLazySingleton(() => GetBlogPost(locator<BlogPostRepository>()));
 
   // Repository
+  // locator.registerLazySingleton<BlogPostRepository>(
+  //   () => BlogPostRepositoryImpl(
+  //     remoteDataSource: locator()),
+  // );
   locator.registerLazySingleton<BlogPostRepository>(
     () => BlogPostRepositoryImpl(
-      remoteDataSource: locator()),
+        remoteDataSource: locator<BlogPostRemoteDataSource>()),
   );
 
   // Data Source

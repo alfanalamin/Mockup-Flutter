@@ -1,16 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
-  final List properties;
-  Failure([this.properties = const <dynamic>[]]);
+ final String message;
+ final int code;
 
-  @override
-  List<Object> get props => [properties];
+const Failure(this.code , this.message); 
+
+@override
+  List<Object> get props => [code, message];
 }
 
 class RequestFailure extends Failure {
-  final int code;
-  final String message;
-
-  RequestFailure(this.code, this.message) : super([code, message]);
+   const RequestFailure(int code, String message) : super(code, message);
 }

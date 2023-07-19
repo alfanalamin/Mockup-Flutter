@@ -11,6 +11,7 @@ abstract class BlogPostRepository {
 
 class BlogPostRepositoryImpl implements BlogPostRepository {
   final BlogPostRemoteDataSource remoteDataSource;
+
   BlogPostRepositoryImpl({
       required this.remoteDataSource,
     });
@@ -21,7 +22,7 @@ class BlogPostRepositoryImpl implements BlogPostRepository {
     try {
       final result = await remoteDataSource.getPost();
       return Right(result);
-    } on Failure catch (e) {
+    } on RequestFailure catch (e) {
       return Left(e);
     }
   }
