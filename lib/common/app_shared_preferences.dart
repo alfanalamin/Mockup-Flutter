@@ -1,35 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSharedPreferences {
-AppSharedPreferences();
-
-  static const String _tokenKey = 'token';
-
-  SharedPreferences? _sharedPreferences;
-
-
-  Future<void> _init() async {
-    _sharedPreferences = await SharedPreferences.getInstance();
+  final SharedPreferences preferences;
+  AppSharedPreferences({required this.preferences});
+  updateToken(String token) {
+    preferences.setString('token', token);
   }
 
-  Future<String?> getToken() async {
-    if (_sharedPreferences == null) {
-      await _init();
-    }
-    return _sharedPreferences?.getString(_tokenKey);
+  String? getToken() {
+    return preferences.getString('token');
   }
 
-  Future<void> setToken(String token) async {
-    if (_sharedPreferences == null) {
-      await _init();
-    }
-    await _sharedPreferences?.setString(_tokenKey, token);
-  }
-
-  Future<void> removeToken() async {
-    if (_sharedPreferences == null) {
-      await _init();
-    }
-    await _sharedPreferences?.remove(_tokenKey);
+  removeToken(BuildContext context) {
+    preferences.remove('token');
   }
 }

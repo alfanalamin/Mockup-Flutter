@@ -11,11 +11,9 @@ abstract class BlogPostRepository {
 
 class BlogPostRepositoryImpl implements BlogPostRepository {
   final BlogPostRemoteDataSource remoteDataSource;
-  BlogPostRepositoryImpl(
-    {
+  BlogPostRepositoryImpl({
       required this.remoteDataSource,
-    }
-  );
+    });
 
   @override
   Future<Either<Failure, Query$blogPosts$blogPosts?>>

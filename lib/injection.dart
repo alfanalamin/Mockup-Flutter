@@ -1,5 +1,6 @@
 import 'package:flutter_application_1/common/app_shared_preferences.dart';
 import 'package:flutter_application_1/common/configs.dart';
+import 'package:flutter_application_1/common/dio.dart';
 import 'package:flutter_application_1/common/graphql/graphql_configuration.dart';
 import 'package:flutter_application_1/data/remote/blog_post_remote_data_source.dart';
 import 'package:flutter_application_1/domain/repository/blog_post_repository.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_application_1/presentation/provider/blog_post_provider.d
 import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 
 final locator = GetIt.instance;
 late String _flavor;
@@ -15,49 +17,41 @@ late String _flavor;
 void init(String flavor) {
   _flavor = flavor;
   locator.allowReassignment = true;
-  locator.registerSingletonAsync<SharedPreferences>(() async {
-    return await SharedPreferences.getInstance();
-  });
-  locator.registerSingleton<AppSharedPreferences>(AppSharedPreferences());
+
+  locator.registerSingletonAsync<SharedPreferences>(
+    () => SharedPreferences.getInstance()
+  );
+  locator.registerLazySingleton<AppSharedPreferences>(
+    () => AppSharedPreferences(preferences: locator()));
 
   // Provider
   locator.registerFactory(() => BlogPostProvider(
-        getPost: locator<GetBlogPost>(),
-      ));
+        getPost: locator()));
 
   // Usecase
-  locator.registerLazySingleton<GetBlogPost>(
-      () => GetBlogPost(locator<BlogPostRepository>()));
+  locator.registerLazySingleton( () => GetBlogPost(locator()));
 
   // Repository
   locator.registerLazySingleton<BlogPostRepository>(
     () => BlogPostRepositoryImpl(
-      remoteDataSource: locator<BlogPostRemoteDataSource>(),
-    ),
+      remoteDataSource: locator()),
   );
 
   // Data Source
   locator.registerLazySingleton<BlogPostRemoteDataSource>(
-    () => BlogPostRemoteDataSourceImpl(
-      graphQLClient: locator<GraphQLClient>(),
-    ),
+    () => BlogPostRemoteDataSourceImpl(),
   );
 
   // External
-  locator.registerLazySingletonAsync<GraphQLClient>(() async {
-    final config = GraphQLConfiguration();
-    final client = await config.getClient(_flavor);
-    return client;
-  });
+  locator.registerLazySingletonAsync<GraphQLClient>(()
+  => GraphQLConfiguration().getClient(flavor));
 
-  locator.registerLazySingleton<Configs>(() => Configs());
+  locator.registerLazySingletonAsync<Dio>(() => DioClient().client(flavor));
+  locator.registerLazySingleton(() => Configs(flavor));
 }
 
 void resetExternal() {
-  locator.unregister<GraphQLClient>();
-  locator.registerLazySingletonAsync<GraphQLClient>(() async {
-    final config = GraphQLConfiguration();
-    final client = await config.getClient(_flavor);
-    return client;
-  });
+  locator.registerLazySingletonAsync<Dio>(() => DioClient().client(_flavor));
+  locator.registerLazySingletonAsync<GraphQLClient>(()
+  => GraphQLConfiguration().getClient(_flavor));
 }

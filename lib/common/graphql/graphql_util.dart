@@ -12,7 +12,7 @@ void checkError(QueryResult<Object?> result) {
       print(message);
     }
     if (err.linkException != null) {
-      throw RequestFailure(-1, 'No Internet Connection');
+      throw  RequestFailure(-1, 'Not connected');
     }
     var ext = err.graphqlErrors.first.extensions?['response'];
     errCode = ext != null ? ext['statusCode'] : 500;

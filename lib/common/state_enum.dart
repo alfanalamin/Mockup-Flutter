@@ -5,5 +5,5 @@ enum RequestState {
   Error,
   EmptyPagination,
   LoadingPagination,
-  LoadedPagination,
+  LoadedPagination, Idle,
 }
