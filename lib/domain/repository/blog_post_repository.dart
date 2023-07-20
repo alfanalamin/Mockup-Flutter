@@ -22,8 +22,8 @@ class BlogPostRepositoryImpl implements BlogPostRepository {
     try {
       final result = await remoteDataSource.getPost();
       return Right(result);
-    } on RequestFailure catch (e) {
-      return Left(e);
+    } on RequestFailure catch (it) {
+      return Left(it);
     }
   }
 }
