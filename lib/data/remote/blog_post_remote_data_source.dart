@@ -42,12 +42,14 @@ class BlogPostRemoteDataSourceImpl implements BlogPostRemoteDataSource {
         return Query$blogPosts$blogPosts.fromJson(responseData['blogPosts']);
       } else {
         // Handle the case when 'blogPosts' key is null or missing in the response
+        // ignore: avoid_print
         print(
             'Error: blogPosts key is missing or null in the GraphQL response.');
         return null;
       }
     } else {
       // Handle the case when responseData is null
+      // ignore: avoid_print
       print('Error: GraphQL response data is null.');
       return null;
     }
