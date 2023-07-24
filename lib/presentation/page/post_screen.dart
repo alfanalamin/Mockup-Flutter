@@ -14,11 +14,29 @@ class _BlogPostScreenState extends State<BlogPostScreen> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<BlogPostProvider>(context, listen: false).doGetPost();
+  //   });
+  // }
+
   @override
   void initState() {
-    super.initState();
+  super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<BlogPostProvider>(context, listen: false).doGetPost();
+      Future.microtask(
+          () => Provider.of<BlogPostProvider>(context, listen: false)
+            ..doGetPost().then((value) {
+              context
+                  .read<BlogPostProvider>()
+                  .postsData
+                  ?.items
+                  .forEach((element) {
+                  // print(element.title);
+              });
+            }));
     });
   }
 
@@ -55,19 +73,22 @@ class _BlogPostScreenState extends State<BlogPostScreen> {
           case RequestState.Loaded:
             if (provider.postsData != null) {
               // Display the fetched data using ListView.builder
-              return SmartRefresher(
-                controller: _refreshController,
-                onRefresh: _onRefresh,
-                onLoading: _onLoading,
-                child: ListView.builder(
-                  itemCount: provider.postsData!.items.length,
-                  itemBuilder: (context, index) {
-                    final post = provider.postsData!.items[index];
-                    return ListTile(
-                      title: Text(post.title ?? ''),
-                      // Add more widgets to display other details of the post
-                    );
-                  },
+              return SizedBox(
+                height: MediaQuery.of(context).size.height-150,
+                child: SmartRefresher(
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: ListView.builder(
+                    itemCount: provider.postsData!.items.length,
+                    itemBuilder: (context, index) {
+                      final post = provider.postsData!.items[index];
+                      return ListTile(
+                        title: Text(post.title ?? ''),
+                        // Add more widgets to display other details of the post
+                      );
+                    },
+                  ),
                 ),
               );
             } else {
