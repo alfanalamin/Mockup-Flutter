@@ -13,9 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
 final locator = GetIt.instance;
-late String _flavor;
 
-Future<void> init(String flavor) async {
+late String _flavor;
+void init(String flavor) {
   _flavor = flavor;
   locator.allowReassignment = true;
 
@@ -45,19 +45,14 @@ Future<void> init(String flavor) async {
       () => BlogPostRemoteDataSourceImpl());
 
   // External - Wait for GraphQLClient initialization
-  final graphQLClient = await GraphQLConfiguration().getClient(flavor);
-  locator.registerSingleton<GraphQLClient>(graphQLClient);
-
-  // External - Wait for Dio initialization
-  final dioClient = await DioClient().client(flavor);
-  locator.registerSingleton<Dio>(dioClient);
-
-  // Configs
-  locator.registerSingleton(Configs(flavor));
+  locator.registerSingletonAsync<GraphQLClient>(
+      () => GraphQLConfiguration().getClient(flavor));
+  locator.registerSingletonAsync<Dio>(() => DioClient().client(flavor));
+  locator.registerLazySingleton(() => Configs(flavor));
 }
 
 void resetExternal() {
-  locator.registerLazySingletonAsync<Dio>(() => DioClient().client(_flavor));
-  locator.registerLazySingletonAsync<GraphQLClient>(
+  locator.registerSingletonAsync<Dio>(() => DioClient().client(_flavor));
+  locator.registerSingletonAsync<GraphQLClient>(
       () => GraphQLConfiguration().getClient(_flavor));
 }
