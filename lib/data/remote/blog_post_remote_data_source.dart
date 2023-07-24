@@ -12,14 +12,16 @@ class BlogPostRemoteDataSourceImpl implements BlogPostRemoteDataSource {
 
   @override
   Future<Query$blogPosts$blogPosts?> getPost() async {
-    final graphQLClient = GetIt.I<GraphQLClient>();
-
-    final queryOptions = QueryOptions(
-      document: Options$Query$blogPosts().document,
-      fetchPolicy: FetchPolicy.networkOnly,
-    );
 
     try {
+
+      final graphQLClient = GetIt.I<GraphQLClient>();
+
+      final queryOptions = QueryOptions(
+        document: Options$Query$blogPosts().document,
+        fetchPolicy: FetchPolicy.networkOnly,
+      );
+
       final result = await graphQLClient.query(queryOptions);
       if (result.hasException) {
         // Handle GraphQL query exceptions
